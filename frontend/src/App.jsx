@@ -1,16 +1,103 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import HeartForm from "./components/HeartForm";
+import PrescriptionUpload from "./components/PrescriptionUpload";
+import PrescriptionHistory from "./components/PrescriptionHistory";
+
+import AuthHome from "./pages/AuthHome";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+function Dashboard() {
+  return (
+    <div className="min-h-screen bg-slate-50">
+
+      <Navbar />
+
+      <Hero />
+
+      <main className="max-w-7xl mx-auto px-4 py-10 space-y-12">
+
+        {/* Heart Disease Prediction */}
+        <section className="bg-white rounded-3xl shadow-xl p-8">
+          <HeartForm />
+        </section>
+
+        {/* Prescription Intelligence */}
+        <section>
+          <PrescriptionUpload />
+        </section>
+
+        {/* Prescription History */}
+        <section>
+          <PrescriptionHistory />
+        </section>
+
+      </main>
+
+    </div>
+  );
+}
+
+function ProtectedRoute({ children }) {
+
+  const token = localStorage.getItem("token");
+
+  return token
+    ? children
+    : <Navigate to="/auth" />;
+}
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-10 rounded-2xl shadow-xl">
-        <h1 className="text-4xl font-bold text-blue-600">
-          MediIntel AI
-        </h1>
+    <BrowserRouter>
 
-        <p className="mt-4 text-gray-600">
-          Healthcare Intelligence Platform
-        </p>
-      </div>
-    </div>
+      <Routes>
+
+        {/* Landing Authentication Page */}
+        <Route
+          path="/auth"
+          element={<AuthHome />}
+        />
+
+        {/* Login */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        {/* Register */}
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        {/* Dashboard */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fallback */}
+        <Route
+          path="*"
+          element={<Navigate to="/auth" />}
+        />
+
+      </Routes>
+
+    </BrowserRouter>
   );
 }
 
