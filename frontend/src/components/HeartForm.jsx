@@ -32,7 +32,7 @@ function HeartForm() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/predict",
+        `${API_URL}/predict`,
         {
           ...formData,
           age: Number(formData.age),

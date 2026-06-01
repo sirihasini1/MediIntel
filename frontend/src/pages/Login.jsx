@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/login",
+        `${API_URL}/login`,
         formData
       );
 
