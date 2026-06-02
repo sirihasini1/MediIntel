@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import joblib
 import numpy as np
 import shutil
+import os
 
 from ocr import extract_text
 from ai_summary import generate_medicine_summary
@@ -231,7 +232,12 @@ async def upload_prescription(
 
     try:
 
-        file_path = f"uploads/{file.filename}"
+        os.makedirs("uploads", exist_ok=True)
+
+        file_path = os.path.join(
+            "uploads",
+            file.filename
+        )
 
         with open(
             file_path,
