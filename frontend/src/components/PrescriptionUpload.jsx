@@ -3,6 +3,11 @@ import axios from "axios";
 import generateReport from "../utils/generateReport";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://mediintel-vxvx.onrender.com";
+
+  
 function PrescriptionUpload() {
   const [file, setFile] = useState(null);
   const [ocrData, setOcrData] = useState(null);

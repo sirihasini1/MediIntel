@@ -7,6 +7,11 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://mediintel-vxvx.onrender.com";
+
+  
 function PrescriptionHistory() {
   const [history, setHistory] = useState([]);
 
