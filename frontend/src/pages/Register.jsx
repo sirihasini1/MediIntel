@@ -1,6 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://mediintel-vxvx.onrender.com";
+
 function Register() {
 
   const [formData, setFormData] = useState({
@@ -10,6 +14,7 @@ function Register() {
   });
 
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -22,20 +27,35 @@ function Register() {
 
     try {
 
-      await axios.post(
+      const response = await axios.post(
         `${API_URL}/register`,
         formData
       );
 
-      alert("Registration Successful");
+      alert(
+        response.data.message ||
+        "Registration Successful"
+      );
 
       window.location.href = "/login";
 
     } catch (error) {
 
-      console.error(error);
+      console.error("Register Error:", error);
 
-      alert("Registration Failed");
+      if (error.response) {
+
+        alert(
+          error.response.data.message ||
+          "Registration Failed"
+        );
+
+      } else {
+
+        alert(
+          "Backend Server Not Reachable"
+        );
+      }
     }
   };
 
@@ -52,12 +72,14 @@ function Register() {
           onSubmit={handleSubmit}
           className="space-y-5"
         >
+
           <input
             type="text"
             name="name"
             placeholder="Name"
             value={formData.name}
             onChange={handleChange}
+            required
             className="w-full border p-3 rounded-xl"
           />
 
@@ -67,6 +89,7 @@ function Register() {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
+            required
             className="w-full border p-3 rounded-xl"
           />
 
@@ -76,15 +99,17 @@ function Register() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
+            required
             className="w-full border p-3 rounded-xl"
           />
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-xl"
+            className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition"
           >
             Register
           </button>
+
         </form>
 
       </div>
