@@ -1,61 +1,43 @@
-import cv2
-import easyocr
+import requests
 import os
 
-reader = easyocr.Reader(['en'], gpu=False)
 
-
-def preprocess_image(image_path):
-
-    image = cv2.imread(image_path)
-
-    gray = cv2.cvtColor(
-        image,
-        cv2.COLOR_BGR2GRAY
-    )
-
-    gray = cv2.GaussianBlur(
-        gray,
-        (3, 3),
-        0
-    )
-
-    thresh = cv2.threshold(
-        gray,
-        0,
-        255,
-        cv2.THRESH_BINARY + cv2.THRESH_OTSU
-    )[1]
-
-    os.makedirs(
-        "uploads",
-        exist_ok=True
-    )
-
-    processed_path = os.path.join(
-        "uploads",
-        "processed_image.png"
-    )
-
-    cv2.imwrite(
-        processed_path,
-        thresh
-    )
-
-    return processed_path
+API_KEY = os.getenv(
+    "OCR_SPACE_API_KEY"
+)
 
 
 def extract_text(image_path):
 
-    processed_image = preprocess_image(
-        image_path
-    )
+    with open(
+        image_path,
+        "rb"
+    ) as image_file:
 
-    results = reader.readtext(
-        processed_image,
-        detail=0
-    )
+        response = requests.post(
+            "https://api.ocr.space/parse/image",
+            files={
+                "file": image_file
+            },
+            data={
+                "apikey": API_KEY,
+                "language": "eng",
+                "isOverlayRequired": False
+            }
+        )
 
-    text = "\n".join(results)
+    result = response.json()
 
-    return text
+    if (
+        "ParsedResults" in result
+        and len(result["ParsedResults"]) > 0
+    ):
+
+        return result[
+            "ParsedResults"
+        ][0].get(
+            "ParsedText",
+            ""
+        )
+
+    return ""
